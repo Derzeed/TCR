@@ -18,66 +18,44 @@ struct Edge {
     from(from), to(to), capacity(capacity), cost(cost), index(index), flow(0) {}
 };
 
-struct SSP {
+struct LeviticFlow { // O(N^2M^2) (O(N^2*M*log(M)))
   vector<vector<Edge> > edges;
-  vector<ld> pi;
-
-  vector<Edge *>  dad;
+  vector<Edge *> dad;
   vector<bool> used;
-  vector<ld>   dist;
+  vector<ld> d;
+  vector<int> id;
 
-  SSP(int N) : edges(N), pi(N), dad(N), used(N), dist(N) {}
+  LeviticFlow(int N) : edges(N), pi(N), dad(N), used(N), d(N), id(N) {}
 
   void addEdge(int from, int to, ll capacity, ld cost) {
-    if(from >= edges.size() || to >= edges.size()) return;
     edges[from].PB(Edge(from, to,   capacity, cost,  edges[to].size()));
     if(from == to) ++edges[from].back().index;
     edges[to].  PB(Edge(to,   from, 0,        -cost, edges[from].size()-1));
   }
 
-  void bellmanFord(int s) {
-    fill(pi.begin(), pi.end(), INF_ld);
-    pi[s] = 0;
-    for(uint j = 0; j < edges.size(); ++j) {
-      for(auto nodeEdges : edges) {
-        for(auto edge : nodeEdges) {
-          if(edge.capacity > 0) {
-            pi[edge.to] = min(pi[edge.to], pi[edge.from]+edge.cost);
-          }
-        }
-      }
-    }
-  }
-
   pair<ll, ld> findShortestPath(int s, int t) {
     fill(dad.begin(), dad.end(), (Edge *)NULL);
-    fill(used.begin(), used.end(), false);
-    fill(dist.begin(), dist.end(), INF_ld);
-    priority_queue<pair<ld, int> > q;
-    q.push(MP(0, s));
-    dist[s] = 0;
-    while(!q.empty()) {
-      int node = q.top().second;
-      q.pop();
-      if(used[node]) continue;
-      used[node] = true;
+    fill(id.begin(), id.end(), 0);
+    fill(d.begin(), d.end(), INF_ld);
+    d[s] = 0;
+    deque<int> q;
+    q.push_back (s);
 
-      for(Edge &edge : edges[node]) {
-        if(used[edge.to] || edge.capacity - edge.flow == 0) continue;
-
-        ld tmp = dist[edge.from] + edge.cost + pi[edge.from] - pi[edge.to];
-        if(tmp < dist[edge.to]) {
-          dist[edge.to] = tmp;
-          dad[edge.to]  = &edge;
-          q.push(MP(-tmp, edge.to));
+    while (!q.empty()) {
+      int v = q.front();
+      q.pop_front();
+      id[v] = 1;
+      for (Edge& e : edges[v]) {
+        if (e.flow < e.capacity && d[e.to] > d[v] + e.cost) {
+          d[e.to] = d[v] + e.cost;
+          if (id[e.to] == 0) q.push_back (e.to);
+          else if (id[e.to] == 1) q.push_front (e.to);
+          dad[e.to] = &e;
+          id[e.to] = 1;
         }
       }
     }
-    if(!used[t]) return MP(0, 0);
-
-    for(uint i = 0; i < edges.size(); ++i) {
-      pi[i] = min(dist[i]+pi[i], INF_ld);
-    }
+    if(!id[t]) return MP(0, 0);
 
     ll flow = INF_ll;
     for(Edge *e = dad[t]; e != NULL; e = dad[e->from]) {
@@ -97,7 +75,6 @@ struct SSP {
   pair<ll, ld> minCostMaxFlow(int s, int t) {
     ll maxF = 0;
     ld minC = 0;
-    bellmanFord(s);
     while(true) {
       pair<ll, ld> path = findShortestPath(s, t);
       if(path.first == 0) break;
@@ -112,7 +89,7 @@ struct SSP {
 int main() { // Tested on https://open.kattis.com/problems/mincostmaxflow
   int n, m, s, t;
   cin >> n >> m >> s >> t;
-  SSP instance(n);
+  LeviticFlow instance(n);
   for(int i = 0; i < m; i++) {
     int from, to, capacity, cost;
     cin >> from >> to >> capacity >> cost;

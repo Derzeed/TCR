@@ -7,9 +7,9 @@ typedef long long ll;
 const ll INF = numeric_limits<ll>::max();
 
 struct Edge {
-    ll cap;
+    ll cap, base; // base is optional
     int from, to, index;
-    Edge(int from, int to, ll cap, int index) : from(from), to(to), cap(cap), index(index) {}
+    Edge(int from, int to, ll cap, int index) : from(from), to(to), cap(cap), base(cap), index(index) {}
 };
 
 struct Scaling { //O(|E|^2*log(C_max))
@@ -57,22 +57,33 @@ struct Scaling { //O(|E|^2*log(C_max))
     }
 };
 
-int main() {
-  int N, M;
+int main() { //tested on https://open.kattis.com/problems/maxflow
+  int N, M, s,t;
 
-  cin >> N >> M;
+  cin >> N >> M >> s >> t;
 
-  Scaling instance(N+1);
-
+  Scaling instance(N);
   for(int i = 0; i < M; ++i) {
     int from, to;
     ll capacity;
     cin >> from >> to >> capacity;
     instance.addEdge(from, to, capacity);
-    instance.addEdge(to, from, capacity);
   }
 
-  cout << instance.maxFlow(1, N) << endl;
-
+  cout << N << " " << instance.maxFlow(s, t) << " ";
+  int mprime = 0;
+  for(auto v : instance.edges) {
+    for(auto e : v) {
+      if(e.base > 0 && e.cap != e.base) mprime++;
+    }
+  }
+  cout << mprime << endl;
+  for(auto v : instance.edges) {
+    for(auto e : v) {
+      if(e.base > 0 && e.cap != e.base) {
+        cout << e.from << " " << e.to << " " << e.base-e.cap << endl;
+      }
+    }
+  }
   return 0;
 }
