@@ -13,7 +13,7 @@ int N; // x[i] exists for all 1 <= i <= N
 
 int get(int k) { // Returns x[1] + x[2] + ... + x[k]
   int sum = 0;
-  for(int i = k; i >= 0; i -= phi(i)) sum += arr[i];
+  for(int i = k; i > 0; i -= phi(i)) sum += arr[i];
   return sum;
 }
 
