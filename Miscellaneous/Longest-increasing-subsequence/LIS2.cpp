@@ -1,7 +1,4 @@
-#include <iostream>
-#include <cstdio>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 using vi = vector<int>;
 
@@ -14,18 +11,10 @@ vi longestIncresing(vi array) {
       parent[i] = S.back();
       S.push_back(i);
     } else {
-      int low = 0;
-      int high = S.size()-1;
-      while(low != high) {
-        int mid = (low + high)/2;
-        if(array[S[mid]] < val) {
-          low = mid + 1;
-        } else {
-          high = mid;
-        }
-      }
-      S[low] = i;
-      parent[i] = low > 0 ? S[low-1] : -1;
+      //binary search
+      int idx = lower_bound(S.begin(),S.end(), val, [&](int a,int r){return array[a] < r;})-S.begin();
+      S[idx] = i;
+      parent[i] = idx > 0 ? S[idx-1] : -1;
     }
   }
   vi res;
