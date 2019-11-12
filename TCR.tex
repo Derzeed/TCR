@@ -1,5 +1,7 @@
 \documentclass[a4paper,11pt]{article}
 
+\usepackage[a4paper, margin=0.8in]{geometry}
+
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -9,6 +11,7 @@
 \usepackage[usenames,dvipsnames,table]{xcolor}
 \usepackage[pdftex,colorlinks=true]{hyperref}
 \usepackage{fancyhdr}
+\usepackage{multicol}
 
 \hypersetup{
   bookmarksnumbered,
@@ -33,7 +36,8 @@
   keywordstyle=\color{RoyalBlue},
   stringstyle=\color{Maroon},
   commentstyle=\color{ForestGreen},
-  language=C++
+  language=C++,
+  %multicols=2,
 }
 
 \pagestyle{fancy}
@@ -104,8 +108,8 @@ int approxTwo(int n) {
   \subsection{Segment Tree}
     \lstinputlisting[firstline=16,lastline=89]{Data-structures/segment-tree/Segment-tree.cpp}    
     
-  %\subsection{Treap}
-    %\lstinputlisting[firstline=6,lastline=53]{Data-structures/Treap/treap-new.cpp}
+  \subsection{Treap}
+    \lstinputlisting[firstline=6,lastline=53]{Data-structures/Treap/treap-new.cpp}
   
   \subsection{Disjoint Set}
     \lstinputlisting[firstline=9,lastline=26]{Data-structures/Disjoint-set/disjoint-set.cpp}    
@@ -125,7 +129,7 @@ int approxTwo(int n) {
     \lstinputlisting[firstline=7,lastline=19]{Graph/Multiple-sources-shortest-path/floyd-warshall.cpp}
   
   \subsection{Maximum Flow}
-    \lstinputlisting[firstline=13,lastline=93]{Graph/Max-flow/Dinic.cpp}
+    \lstinputlisting[firstline=9,lastline=58]{Graph/Max-flow/Scaling.cpp}
   
   \subsection{Minimum Cost Maximum Flow}
     \lstinputlisting[firstline=15,lastline=115]{Graph/Min-cost-max-flow/SSP.cpp}
@@ -156,8 +160,8 @@ int approxTwo(int n) {
   \subsection{Longest Increasing Subsequence}
     \lstinputlisting[firstline=5,lastline=27]{Miscellaneous/Longest-increasing-subsequence/LIS2.cpp}    
     
-  %\subsection{Fast Fourier Transform}
-    %\lstinputlisting[firstline=26,lastline=76]{Miscellaneous/FFT/FFT.cpp}    
+  \subsection{Fast Fourier Transform}
+    \lstinputlisting[firstline=26,lastline=76]{Miscellaneous/FFT/FFT.cpp}    
     
   \subsection{Minimum weight matching}
     \lstinputlisting[firstline=11,lastline=61]{Miscellaneous/Min-weight-matching/hungarian.cpp}
