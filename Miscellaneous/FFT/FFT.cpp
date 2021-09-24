@@ -1,91 +1,89 @@
-#include <cstdio>
-#include <iostream>
-#include <vector>
-#include <complex>
-#include <cmath>
-
+#include<bits/stdc++.h>
 using namespace std;
-
-// typedef vector<int> vi;
+typedef long long ll;
 typedef long double ld;
 typedef complex<ld> com;
 typedef vector<com> vc;
-
-ld pi = acos(-1);
+const ld pi = acos(-1);
 
 int approxTwo(int n) {
-  n = n - 1;
-  n |= n >> 1;
-  n |= n >> 2;
-  n |= n >> 4;
-  n |= n >> 8;
-  n |= n >> 16;
-  return n + 1;
+    return 1 << (32 - __builtin_clz(n - 1));
 }
 
-vc FFTHelper(vc even, vc odd, com root) {
-  int n = 2*even.size();
-  vc res(n);
+void bit_rev(vc &a) {
+    int n = a.size();
+    int j = 0;
+    for (int i = 1; i < n; i++) {
+        int bit = n >> 1;
+        while(j & bit) {
+            j ^= bit;
+            bit >>= 1;
+        }
+        j ^= bit;
 
-  com mult = 1;
-  for(int i = 0; i < n/2; ++i) {
-    res[i] = even[i] + mult*odd[i];
-    res[n/2 + i] = even[i] - mult*odd[i];
-    mult *= root;
-  }
-
-  return res;
+        if (i < j) swap(a[i], a[j]);
+    }
 }
 
-vc FFT(vc coeff, int sign) {
-  int n = coeff.size();
-  if(n == 1) return coeff;
-
-  vc even(n/2), odd(n/2);
-  for(int i = 0; i < n/2; ++i) {
-    even[i] = coeff[i<<1];
-    odd[i]  = coeff[(i<<1) + 1];
-  }
-
-  return FFTHelper(FFT(even, sign), FFT(odd, sign), exp(com(0, sign*2*pi/n)));
+void fft(vc &a, int sign = 1) {
+    int n = a.size();
+    bit_rev(a);
+    for (int len = 2; len <= n; len *= 2) {
+        ld theta = sign * 2 * pi / len;
+        com root(cos(theta), sin(theta));
+        for (int i = 0; i < n; i += len) {
+            com w = 1.0;
+            for (int j = 0; j < len/2; j++) {
+                com even = a[i + j];
+                com odd = w * a[i + j + len/2];
+                a[i + j] = even + odd;
+                a[i + j + len/2] = even - odd;
+                w *= root;
+            }
+        }
+    }
 }
 
-vc invFFT(vc vals) {
-  int n = vals.size();
-  vc res = FFT(vals, -1);
-  for(int i = 0; i < n; ++i) res[i] = res[i]/com(n);
-  return res;
+void ifft(vc &a) {
+    fft(a, -1);
+    for (auto &it : a) it /= a.size();
 }
 
-vc mult(vc a, vc b) {
-  int resN = a.size() + b.size()-1;
-  int n = approxTwo(resN);
-  a.resize(n, com(0,0));
-  b.resize(n, com(0,0));
+vc conv(vc a, vc b) {
+    int n = a.size() + b.size() - 1;
+    int n2 = approxTwo(n);
 
-  vc res(n);
-  vc resA = FFT(a, 1);
-  vc resB = FFT(b, 1);
-  for(int i = 0; i < n; ++i) {
-    res[i] = resA[i]*resB[i];
-  }
+    a.resize(n2);
+    b.resize(n2);
+    fft(a);
+    fft(b);
 
-  vc tmp = invFFT(res);
-  tmp.resize(resN);
-  return tmp;
+    for (int i = 0; i < n2; i++) {
+        a[i] *= b[i];
+    }
+    ifft(a);
+    a.resize(n);
+    return a;
 }
 
-int main() {
-  vc a = {com(1), com(1)};
-  vc b = {com(1), com(1)};
-  // a.resize(4, com(0));
-  vc c = mult(a, b);
-  cout << pow(exp(com(0, pi/2)), 1) << endl;
-  cout << a.size() << endl;
-  cout << b.size() << endl;
-  cout << c.size() << endl;
-  for(int i = 0; i < c.size(); ++i) {
-    cout << c[i] << endl;
-  }
-  return 0;
+int main() { // Tested on https://open.kattis.com/problems/polymul2
+    int t; cin >> t;
+    while (t--) {
+        int n; cin >> n;
+        n++;
+        vc a(n);
+        for (auto &it : a) cin >> it;
+
+        int m; cin >> m;
+        m++;
+        vc b(m);
+        for (auto &it : b) cin >> it;
+
+        vc res = conv(a, b);
+        cout << res.size() - 1 << endl;
+        for (int i = 0; i < res.size(); i++) {
+            cout << (ll)round(res[i].real()) << " \n"[i == res.size()-1];
+        }
+    }
 }
+
