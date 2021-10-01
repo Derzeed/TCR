@@ -5,39 +5,34 @@
 #include <tuple>
 
 #define MT(args...) make_tuple(args)
-
+#define F first
+#define S second
 using namespace std;
 
 typedef vector<int> vi;
 
-//            length, from, to
-typedef tuple<int,    int,  int> Edge;
-typedef vector<Edge> ve;
-typedef vector<ve> vve;
-typedef tuple<int, int> tii;
+typedef pair<int, int> ii;
+typedef vector<ii> vii;
+typedef vector<vii> vvii;
 
-int INF = 1 << 29;
+vi Dijkstra(vvii &con, int s) {
+  vi dis(con.size(), -1);
+  priority_queue<ii> q;
+  q.push(MT(0, s));
 
-vi Dijkstra(vve vertices, int source) {
-  vi dist(vertices.size(), INF);
-  priority_queue<tii> que;
-  que.push(MT(0, source));
-
-  while(!que.empty()) {
-    int vertex, length;
-    tie(vertex, length) = que.top();
-    que.pop();
-
-    if(length < dist[vertex]) {
-      dist[vertex] = length;
-      for(auto edge : vertices[vertex]) {
-        if(length + get<0>(edge) < dist[get<2>(edge)]) {
-          que.push(MT(get<2>(edge), length + get<0>(edge)));
-        }
+  while(!q.empty()) {
+    int v, d; // d is negative
+    tie(v, d) = q.top();
+    q.pop();
+    if(dis[v] != -1) continue;
+    dis[v] = -d;
+    for(auto e : con[v]) {
+      if(-d + e.F < dis[e.S]) {
+        q.push({d-e.F, e.S});
       }
     }
   }
-  return dist;
+  return dis;
 }
 
 int main() {

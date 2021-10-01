@@ -54,8 +54,8 @@ struct SegmentTree {
     for(int s = H; s > 0; --s, k >>= 1) {
       int i = p >> s;
       if(d[i]) {
-        apply(i>>1,   d[i], k);
-        apply(i>>1|1, d[i], k);
+        apply(i<<1,   d[i], k);
+        apply(i<<1|1, d[i], k);
         d[i] = 0;
       }
     }
