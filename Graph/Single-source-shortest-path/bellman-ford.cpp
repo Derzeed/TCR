@@ -4,25 +4,26 @@
 #include <queue>
 #include <tuple>
 
+#define ll long long
 #define MT(args...) make_tuple(args)
 
 using namespace std;
 
-typedef vector<int> vi;
+typedef vector<ll> vll;
 
 //            length, from, to
-typedef tuple<int,    int,  int> Edge;
+typedef tuple<ll,     int,  int> Edge;
 typedef vector<Edge> ve;
 typedef vector<ve> vve;
 
-int INF = 1 << 29;
+ll INF = 1L << 61;
 
-vi BellmanFord(vve vertices, int source) {
-  vi dist(vertices.size(), INF);
+vll BellmanFord(vve vertices, int source) {
+  vll dist(vertices.size(), INF);
   dist[source] = 0;
 
-  for(int k = 0; k < vertices.size(); ++k) {
-    for(int i = 0; i < vertices.size(); ++i) {
+  for(int k = 0; k < (int) vertices.size(); ++k) {
+    for(int i = 0; i < (int) vertices.size(); ++i) {
       for(auto edge : vertices[i]) {
         if(dist[get<1>(edge)] + get<0>(edge) < dist[get<2>(edge)]) {
           dist[get<2>(edge)] = dist[get<1>(edge)] + get<0>(edge);
@@ -31,7 +32,7 @@ vi BellmanFord(vve vertices, int source) {
     }
   }
 
-  for(int i = 0; i < vertices.size(); ++i) {
+  for(int i = 0; i < (int) vertices.size(); ++i) {
     for(auto edge : vertices[i]) {
       if(dist[get<1>(edge)] + get<0>(edge) < dist[get<2>(edge)]) {
         throw("There is a negative cycle!");
