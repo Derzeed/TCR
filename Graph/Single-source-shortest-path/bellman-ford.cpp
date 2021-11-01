@@ -35,7 +35,7 @@ vll BellmanFord(vve vertices, int source) {
   for(int i = 0; i < (int) vertices.size(); ++i) {
     for(auto edge : vertices[i]) {
       if(dist[get<1>(edge)] + get<0>(edge) < dist[get<2>(edge)]) {
-        throw("There is a negative cycle!");
+        throw("There is a negative cycle!"); // return vll();  /* When a negative cycle is to be detected in the task */
       }
     }
   }
