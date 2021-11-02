@@ -1,16 +1,3 @@
-#include <cstdio>
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <tuple>
-
-#define ll long long
-#define MT(args...) make_tuple(args)
-
-using namespace std;
-
-typedef vector<ll> vll;
-
 //            length, from, to
 typedef tuple<ll,     int,  int> Edge;
 typedef vector<Edge> ve;
