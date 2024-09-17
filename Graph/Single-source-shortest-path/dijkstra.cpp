@@ -1,19 +1,3 @@
-#include <cstdio>
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <tuple>
-
-#define MT(args...) make_tuple(args)
-#define F first
-#define S second
-using namespace std;
-
-typedef vector<int> vi;
-
-typedef pair<int, int> ii;
-typedef vector<ii> vii;
-typedef vector<vii> vvii;
 
 vi Dijkstra(vvii &con, int s) {
   vi dis(con.size(), -1);
